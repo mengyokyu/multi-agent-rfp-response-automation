@@ -85,7 +85,7 @@ def main_agent_node(state: AgentState) -> Dict[str, Any]:
 You are the Main Orchestrator. Create a brief executive summary for this RFP response.
 
 RFP: {get_rfp_id(selected_rfp)} - {selected_rfp.get('title')}
-Value: ₹{selected_rfp.get('value', 'N/A')}
+Value: ₹{selected_rfp.get('estimated_value') or selected_rfp.get('value', 'N/A')}
 
 Key Points:
 - Technical analysis: {len((technical_analysis or {}).get('recommended_products', []))} products recommended

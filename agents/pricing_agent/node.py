@@ -118,7 +118,7 @@ def pricing_agent_node(state: AgentState) -> Dict[str, Any]:
         # Only include essential technical data - not the full analysis text
         prompt = f"""
 Selected RFP: {get_rfp_id(selected_rfp)} - {selected_rfp.get('title')}
-Value: ₹{selected_rfp.get('value', 'N/A')}
+Value: ₹{selected_rfp.get('estimated_value') or selected_rfp.get('value', 'N/A')}
 
 Recommended Products (from Technical Agent):
 {json.dumps(recommended_products, indent=2, default=str)}
