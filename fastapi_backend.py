@@ -8,12 +8,13 @@ Provides REST APIs for:
 - Dashboard Data
 """
 
-from fastapi import FastAPI, HTTPException, UploadFile, File, BackgroundTasks
+from fastapi import FastAPI, HTTPException, UploadFile, File, BackgroundTasks, Request
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 import json
+import uuid
 from datetime import datetime
 import os
 
@@ -28,13 +29,25 @@ app = FastAPI(
 )
 
 # CORS middleware for React frontend
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ============================================================
+# HELPERS
+# ============================================================
+
+def error_response(message: str, status_code: int = 400, details: Optional[Dict] = None):
+    """Consistent error response format"""
+    content = {"error": True, "message": message}
+    if details:
+        content["details"] = details
+    raise HTTPException(status_code=status_code, detail=content)
 
 # ============================================================
 # IN-MEMORY STORAGE (Replace with database in production)
@@ -53,8 +66,15 @@ test_pricing_db = {}
 
 @app.on_event("startup")
 async def startup_event():
-    """Load initial data on startup"""
+    """Load initial data on startup and validate environment"""
     global oem_catalog_db, test_pricing_db
+
+    # Validate required environment variables
+    cerebras_key = os.getenv('CEREBRAS_API_KEY')
+    if not cerebras_key:
+        print("⚠️  WARNING: CEREBRAS_API_KEY not set. Chat/agent features will not work.")
+    else:
+        print("✅ Cerebras API key configured")
 
     if os.path.exists('data/catalog.json'):
         with open('data/catalog.json', 'r') as f:
@@ -87,6 +107,10 @@ async def health_check():
         "catalog_items": len(oem_catalog_db),
         "test_types": len(test_pricing_db)
     }
+
+@app.get("/api/health")
+async def api_health_check():
+    return await health_check()
 
 
 @app.get("/api/reports/{session_id}/{rfp_id}")
@@ -276,5 +300,6 @@ async def get_dashboard_stats():
         "total_products": len(oem_catalog_db),
         "test_types": len(test_pricing_db),
         "system_status": "operational",
-        "last_updated": datetime.now().isoformat()
+        "last_updated": datetime.now().isoformat(),
+        "llm_configured": bool(os.getenv('CEREBRAS_API_KEY'))
     }
