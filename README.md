@@ -176,7 +176,7 @@ The solution employs a coordinated multi-agent architecture with **one orchestra
 | **Language** | Python 3.9+ | Core application development |
 | **Agent Framework** | LangGraph / CrewAI | Multi-agent orchestration |
 | **Memory Management** | Mem0 | Persistent agent memory and context |
-| **Web Interface** | Flask / Streamlit | User interface and dashboards |
+| **Web Interface** | Next.js / Flask / Streamlit | User interface and dashboards |
 | **Database** | PostgreSQL / SQLite | Data persistence |
 | **Document Processing** | PyPDF2, python-docx | RFP document parsing |
 | **API Integration** | FastAPI | RESTful API endpoints |
@@ -260,6 +260,12 @@ Before you begin, ensure you have the following installed:
 ## 📖 Usage
 
 ### Starting the Application
+
+**Option 0: FastAPI Backend (recommended for API usage)**
+```bash
+uvicorn fastapi_backend:app --reload --host 0.0.0.0 --port 8000
+```
+Health check: `http://localhost:8000/health`
 
 **Option 1: Flask Web Interface**
 ```bash

@@ -1,12 +1,13 @@
 import os
 import json
+from typing import Any, Dict, List
 
-def save_catalog(catalog_db):
+def save_catalog(catalog_db: List[Dict[str, Any]]) -> None:
     os.makedirs('data', exist_ok=True)
     with open('data/catalog.json', 'w') as f:
         json.dump(catalog_db, f, indent=2)
 
-def save_test_pricing(pricing_db):
+def save_test_pricing(pricing_db: Dict[str, Any]) -> None:
     os.makedirs('data', exist_ok=True)
     with open('data/test_pricing.json', 'w') as f:
         json.dump(pricing_db, f, indent=2)

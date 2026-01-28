@@ -65,8 +65,8 @@ Example:
 
 ### Note about lib/api.js
 
-[lib/api.js](lib/api.js) currently uses a hardcoded base URL (`http://localhost:3001`).
-If you use it, either update it to match your backend port or refactor it to call relative `/api/...` paths so it benefits from the Next.js rewrite.
+[lib/api.js](lib/api.js) uses relative `/api/...` paths by default. If you need to target a different backend origin,
+set `NEXT_PUBLIC_API_BASE_URL` (e.g. `http://localhost:8000`) in [.env.example](.env.example).
 
 ## Project structure
 

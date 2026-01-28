@@ -1,5 +1,5 @@
-// API Configuration for MERN Backend
-const API_BASE_URL = "http://localhost:3001";
+// API Configuration for Backend
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 
 // Get auth token from localStorage
 function getAuthToken() {
