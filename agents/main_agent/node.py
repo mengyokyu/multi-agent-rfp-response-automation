@@ -152,12 +152,14 @@ Provide a 2-3 sentence executive summary with a recommendation (proceed/review/d
                 return {
                     "selected_rfp": selected_rfp,
                     "user_selected_rfp_id": selected_id,
+                    "waiting_for_user": False,
                     "current_step": WorkflowStep.ANALYZING,
                     "next_node": NodeName.TECHNICAL_AGENT
                 }
 
         return {
             "messages": [AIMessage(content="Please specify which RFP you'd like to select. Use the RFP number (1, 2, 3) or the RFP ID.")],
+            "waiting_for_user": True,
             "next_node": NodeName.END
         }
 
