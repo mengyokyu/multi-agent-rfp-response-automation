@@ -1,11 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { Bell, Search, LogOut, LogIn, Settings, User as UserIcon, Shield, ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { ButtonLoader, GuestModeLoader } from "@/components/ui/spinner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +22,7 @@ import { useAuth } from "@/contexts/AuthContext";
 export default function Header({ title, subtitle }) {
   const router = useRouter();
   const { user, isAuthenticated, logout, isGuest, continueAsGuest, transitionFromGuest } = useAuth();
+  const [guestLoading, setGuestLoading] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -34,6 +37,14 @@ export default function Header({ title, subtitle }) {
   const handleSignUpFromGuest = () => {
     transitionFromGuest();
     router.push("/signup");
+  };
+
+  const handleContinueAsGuest = () => {
+    setGuestLoading(true);
+    setTimeout(() => {
+      continueAsGuest();
+      router.push("/");
+    }, 1500);
   };
 
   const getInitials = (name) => {
@@ -67,7 +78,9 @@ export default function Header({ title, subtitle }) {
   };
 
   return (
-    <header className="h-16 border-b border-border bg-background/80 backdrop-blur-sm flex items-center justify-between px-6 sticky top-0 z-40">
+    <>
+      {guestLoading && <GuestModeLoader />}
+      <header className="h-16 border-b border-border bg-background/80 backdrop-blur-sm flex items-center justify-between px-6 sticky top-0 z-40">
       <div>
         <h1 className="text-lg font-semibold text-foreground">{title}</h1>
         {subtitle && (
@@ -176,15 +189,18 @@ export default function Header({ title, subtitle }) {
           </DropdownMenu>
         ) : (
           <div className="flex items-center gap-2">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-9"
-              onClick={continueAsGuest}
+            <ButtonLoader 
+              loading={guestLoading}
+              onClick={handleContinueAsGuest}
+              className="h-9 bg-transparent border-border hover:bg-secondary text-foreground"
             >
-              <UserIcon className="mr-2 h-4 w-4" />
-              Continue as Guest
-            </Button>
+              {!guestLoading && (
+                <>
+                  <UserIcon className="mr-2 h-4 w-4" />
+                  Continue as Guest
+                </>
+              )}
+            </ButtonLoader>
             <Link href="/login">
               <Button variant="ghost" size="sm" className="h-9">
                 <LogIn className="mr-2 h-4 w-4" />
@@ -200,5 +216,6 @@ export default function Header({ title, subtitle }) {
         )}
       </div>
     </header>
+    </>
   );
 }
