@@ -188,31 +188,33 @@ export default function Header({ title, subtitle }) {
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <div className="flex items-center gap-2">
-            <ButtonLoader 
-              loading={guestLoading}
-              onClick={handleContinueAsGuest}
-              className="h-9 bg-transparent border-border hover:bg-secondary text-foreground"
-            >
-              {!guestLoading && (
-                <>
-                  <UserIcon className="mr-2 h-4 w-4" />
-                  Continue as Guest
-                </>
-              )}
-            </ButtonLoader>
-            <Link href="/login">
-              <Button variant="ghost" size="sm" className="h-9">
-                <LogIn className="mr-2 h-4 w-4" />
-                Sign In
-              </Button>
-            </Link>
-            <Link href="/signup">
-              <Button size="sm" className="h-9">
-                Get Started
-              </Button>
-            </Link>
-          </div>
+          !isGuest && (
+            <div className="flex items-center gap-2">
+              <ButtonLoader 
+                loading={guestLoading}
+                onClick={handleContinueAsGuest}
+                className="h-9 bg-transparent border-border hover:bg-secondary text-foreground"
+              >
+                {!guestLoading && (
+                  <>
+                    <UserIcon className="mr-2 h-4 w-4" />
+                    Continue as Guest
+                  </>
+                )}
+              </ButtonLoader>
+              <Link href="/login">
+                <Button variant="ghost" size="sm" className="h-9">
+                  <LogIn className="mr-2 h-4 w-4" />
+                  Sign In
+                </Button>
+              </Link>
+              <Link href="/signup">
+                <Button size="sm" className="h-9">
+                  Get Started
+                </Button>
+              </Link>
+            </div>
+          )
         )}
       </div>
     </header>

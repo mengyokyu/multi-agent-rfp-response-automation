@@ -95,18 +95,6 @@ export default function ChatInterface() {
 
   return (
     <div className={styles.chatInterface}>
-      <header className={styles.chatHeader}>
-        <div>
-          <h1>💬 Chat Assistant</h1>
-          <p>AI-powered RFP automation conversation</p>
-        </div>
-        <div className={styles.sessionInfo}>
-          {sessionId && (
-            <span className={styles.sessionBadge}>Session: {sessionId.slice(-8)}</span>
-          )}
-        </div>
-      </header>
-
       <div className={styles.chatMessages}>
         {messages.map((msg, idx) => (
           <div key={idx} className={`${styles.message} ${msg.role === "user" ? styles.user : styles.assistant}`}>
