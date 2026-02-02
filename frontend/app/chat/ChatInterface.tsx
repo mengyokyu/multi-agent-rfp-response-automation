@@ -41,33 +41,42 @@ export default function ChatInterface() {
     setInput("");
     setLoading(true);
 
-    // Simulate 2-second processing time
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: input,
+          sessionId,
+        }),
+      });
 
-    // Generate response based on user input
-    let response = "";
-    const lowerInput = input.toLowerCase();
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
 
-    if (lowerInput.includes("scan") || lowerInput.includes("rfp")) {
-      response = "🔍 **Scanning for RFPs...**\n\nI found 3 new cable and wire RFPs:\n\n1. **Electrical Infrastructure Project** - Budget: $2.5M\n2. **Fiber Optic Cable Installation** - Budget: $1.8M\n3. **Power Cable Supply** - Budget: $3.2M\n\nWould you like me to analyze any of these tenders?";
-    } else if (lowerInput.includes("workflow") || lowerInput.includes("complete")) {
-      response = "⚡ **Starting Complete Workflow...**\n\n1. ✅ Scanning for relevant tenders\n2. ✅ Analyzing requirements\n3. ✅ Generating pricing estimates\n4. ✅ Preparing documentation\n\n**Workflow completed successfully!** Ready for review.";
-    } else if (lowerInput.includes("status")) {
-      response = "📊 **Current System Status**\n\n- **Active Tenders**: 12\n- **Processed**: 8\n- **Pending**: 4\n- **Success Rate**: 85%\n- **Last Sync**: 2 minutes ago\n\nEverything is running smoothly!";
-    } else if (lowerInput.includes("pricing") || lowerInput.includes("price")) {
-      response = "💰 **Pricing Analysis Complete**\n\n**Selected RFP**: Electrical Infrastructure Project\n\n- **Materials Cost**: $1,200,000\n- **Labor Cost**: $800,000\n- **Equipment**: $300,000\n- **Overhead**: $200,000\n\n**Total Estimated**: $2,500,000\n\n**Profit Margin**: 15%\n\nWould you like a detailed breakdown?";
-    } else {
-      response = "🤖 **Processing your request...**\n\nI understand you're asking about: \"" + input + "\"\n\nLet me help you with that. Could you provide more specific details about what you'd like to know?";
+      const data = await response.json();
+
+      const assistantMessage = {
+        role: "assistant",
+        message: data.response,
+        timestamp: new Date().toISOString(),
+      };
+
+      setMessages((prev) => [...prev, assistantMessage]);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      const errorMessage = {
+        role: "assistant",
+        message: "Sorry, I encountered an error. Please try again.",
+        timestamp: new Date().toISOString(),
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setLoading(false);
     }
-
-    const assistantMessage = {
-      role: "assistant",
-      message: response,
-      timestamp: new Date().toISOString(),
-    };
-
-    setMessages((prev) => [...prev, assistantMessage]);
-    setLoading(false);
   };
 
   const handleKeyPress = (e) => {
@@ -127,23 +136,16 @@ export default function ChatInterface() {
         ))}
 
         {loading && (
-          <>
-            <div className={styles.loading3D}>
-              <div className={styles.loading3DCube}></div>
-              <div className={styles.loading3DText}>Processing your request...</div>
-              <div className={styles.loading3DSubtext}>Analyzing and generating response</div>
-            </div>
-            <div className={`${styles.message} ${styles.assistant}`}>
-              <div className={styles.messageAvatar}>🤖</div>
-              <div className={styles.messageContent}>
-                <div className={styles.typingIndicator}>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
+          <div className={`${styles.message} ${styles.assistant}`}>
+            <div className={styles.messageAvatar}>🤖</div>
+            <div className={styles.messageContent}>
+              <div className={styles.typingIndicator}>
+                <span></span>
+                <span></span>
+                <span></span>
               </div>
             </div>
-          </>
+          </div>
         )}
         <div ref={messagesEndRef} />
       </div>
