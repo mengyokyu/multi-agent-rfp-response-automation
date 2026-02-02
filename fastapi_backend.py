@@ -21,6 +21,15 @@ from pathlib import Path
 
 from models import AnalyzeRFPRequest, ChatMessage, ChatResponse, OEMProduct, RFPScanRequest
 from utils import save_catalog, save_test_pricing
+from logging_config import setup_logging, get_logger
+
+# Setup logging
+setup_logging(
+    level=os.getenv("LOG_LEVEL", "INFO"),
+    log_file=os.getenv("LOG_FILE", "logs/app.log"),
+    enable_console=True
+)
+logger = get_logger(__name__)
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -74,19 +83,21 @@ async def startup_event():
     # Validate required environment variables
     cerebras_key = os.getenv('CEREBRAS_API_KEY')
     if not cerebras_key:
-        print("⚠️  WARNING: CEREBRAS_API_KEY not set. Chat/agent features will not work.")
+        logger.warning("CEREBRAS_API_KEY not set. Chat/agent features will not work.")
     else:
-        print("✅ Cerebras API key configured")
+        logger.info("Cerebras API key configured")
 
     if os.path.exists('data/catalog.json'):
         with open('data/catalog.json', 'r') as f:
             oem_catalog_db = json.load(f)
+            logger.info(f"Loaded {len(oem_catalog_db)} products from catalog")
 
     if os.path.exists('data/test_pricing.json'):
         with open('data/test_pricing.json', 'r') as f:
             test_pricing_db = json.load(f)
+            logger.info(f"Loaded {len(test_pricing_db)} test types from pricing data")
 
-    print("✅ RFP Automation System initialized (LangGraph)")
+    logger.info("RFP Automation System initialized (LangGraph)")
 
 # ============================================================
 # HEALTH CHECK
