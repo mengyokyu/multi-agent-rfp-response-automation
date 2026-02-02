@@ -44,7 +44,7 @@ export default function Header({ title, subtitle }) {
     setTimeout(() => {
       continueAsGuest();
       router.push("/");
-    }, 1500);
+    }, 800);
   };
 
   const getInitials = (name) => {

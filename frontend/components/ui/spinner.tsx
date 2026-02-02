@@ -175,52 +175,29 @@ interface GuestModeLoaderProps {
   subtext?: string
 }
 
-function GuestModeLoader({ text = "Entering Guest Mode...", subtext = "Setting up your limited access experience" }: GuestModeLoaderProps) {
+function GuestModeLoader({ text = "Entering Guest Mode...", subtext = "Setting up your experience" }: GuestModeLoaderProps) {
   return (
-    <div className="fixed inset-0 bg-background/90 backdrop-blur-md flex items-center justify-center z-50">
-      <div className="text-center space-y-6">
-        {/* Animated Guest Icon */}
-        <div className="relative inline-block">
-          <div className="w-20 h-20 border-4 border-primary/20 rounded-full"></div>
-          <div className="w-20 h-20 border-4 border-primary border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
+    <div className="fixed inset-0 bg-background/95 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="text-center space-y-4">
+        {/* Professional spinner */}
+        <div className="relative inline-flex items-center justify-center">
+          <div className="w-12 h-12 border-2 border-primary/20 rounded-full"></div>
+          <div className="w-12 h-12 border-2 border-primary border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
           <div className="absolute inset-0 flex items-center justify-center">
-            <UserIcon className="w-8 h-8 text-primary animate-pulse" />
-          </div>
-          {/* Orbiting dots */}
-          <div className="absolute inset-0">
-            <div className="w-2 h-2 bg-primary rounded-full absolute top-0 left-1/2 -translate-x-1/2 animate-ping"></div>
-            <div className="w-2 h-2 bg-primary/60 rounded-full absolute bottom-0 left-1/2 -translate-x-1/2 animate-ping" style={{ animationDelay: '0.5s' }}></div>
-            <div className="w-2 h-2 bg-primary/40 rounded-full absolute top-1/2 left-0 -translate-y-1/2 animate-ping" style={{ animationDelay: '1s' }}></div>
-            <div className="w-2 h-2 bg-primary/40 rounded-full absolute top-1/2 right-0 -translate-y-1/2 animate-ping" style={{ animationDelay: '1.5s' }}></div>
+            <UserIcon className="w-5 h-5 text-primary" />
           </div>
         </div>
         
-        <div className="space-y-2">
-          <p className="text-xl font-medium text-foreground">{text}</p>
+        <div className="space-y-1">
+          <p className="text-lg font-medium text-foreground">{text}</p>
           {subtext && <p className="text-sm text-muted-foreground">{subtext}</p>}
         </div>
         
-        {/* Progress indicators */}
-        <div className="flex justify-center gap-2">
-          <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-          <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-          <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-        </div>
-        
-        {/* Feature highlights */}
-        <div className="flex justify-center gap-6 text-xs text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <Eye className="w-3 h-3" />
-            <span>View Only</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Shield className="w-3 h-3" />
-            <span>Secure</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Sparkles className="w-3 h-3" />
-            <span>Instant</span>
-          </div>
+        {/* Simple progress dots */}
+        <div className="flex justify-center gap-1">
+          <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></div>
+          <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+          <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
         </div>
       </div>
     </div>

@@ -50,11 +50,11 @@ export default function LoginPage() {
 
   const handleGuestAccess = () => {
     setGuestLoading(true);
-    // Simulate a brief loading animation for better UX
+    // Faster loading for better UX
     setTimeout(() => {
       continueAsGuest();
       router.push("/");
-    }, 1500);
+    }, 800);
   };
 
   return (
