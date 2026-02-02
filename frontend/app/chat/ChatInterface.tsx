@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import styles from "./ChatInterface.module.css";
 
 export default function ChatInterface() {
@@ -36,7 +34,9 @@ Ready for input >`,
   }, []);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current && messagesEndRef.current.scrollIntoView) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages]);
 
   const sendMessage = async () => {
@@ -133,16 +133,16 @@ Ready for input >`,
         {messages.map((msg, idx) => (
           <div key={idx} className={`${styles.message} ${msg.role === "user" ? styles.user : styles.assistant}`}>
             <div className={styles.terminalLine}>
-              {msg.role === "user" ? (
-                <>
-                  <span className={styles.terminalPrompt}>
-                    <span className={styles.terminalGreen}>user@rfp-system:~$</span>
-                    <span className={styles.terminalWhite}> {msg.message}</span>
-                  </span>
-                </>
-              ) : (
+              {msg.role === "assistant" ? (
                 <div className={styles.terminalOutput}>
-                  <pre className={styles.terminalText}>{msg.message}</pre>
+                  <pre className={styles.terminalText}>
+                    {msg.message || ""}
+                  </pre>
+                </div>
+              ) : (
+                <div className={styles.terminalPrompt}>
+                  <span className={styles.terminalGreen}>user@rfp-system:~$</span>
+                  <span className={styles.terminalWhite}> {msg.message}</span>
                 </div>
               )}
             </div>
