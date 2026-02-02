@@ -59,7 +59,7 @@ export default function LoginPage() {
 
   return (
     <>
-      {guestLoading && <GuestModeLoader key="guest-loader" />}
+      {guestLoading && <GuestModeLoader />}
       <div className="min-h-screen bg-background flex">
       {/* Left Side - Branding */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">

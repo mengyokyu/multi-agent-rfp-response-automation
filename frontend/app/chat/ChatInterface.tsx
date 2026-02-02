@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import styles from "./ChatInterface.module.css";
 
 export default function ChatInterface() {
@@ -16,27 +18,14 @@ export default function ChatInterface() {
       {
         role: "assistant",
         message:
-          `� RFP-ASSISTANT v2.1.0 [INITIALIZED]
-🔹 System Status: ONLINE
-🔹 Capabilities: Tender scanning, Product analysis, Pricing calculation
-
-┌─ Available Commands ───────────────────────┐
-│ scan for cable RFPs                        │
-│ complete workflow for electrical tenders    │
-│ show current status                         │
-│ calculate pricing for selected RFP          │
-└─────────────────────────────────────────────┘
-
-Ready for input >`,
+          "👋 Hi! I'm your RFP Assistant. I can help you scan tenders from tendersontime.com, analyze products, and generate pricing.\n\nTry: \"Scan for cable RFPs\" or \"Complete workflow for electrical tenders\"",
         timestamp: new Date().toISOString(),
       },
     ]);
   }, []);
 
   useEffect(() => {
-    if (messagesEndRef.current && messagesEndRef.current.scrollIntoView) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const sendMessage = async () => {
@@ -103,28 +92,22 @@ Ready for input >`,
   };
 
   const quickActions = [
-    { label: "[SCAN] RFPs", message: "scan for cable and wire RFPs" },
-    { label: "[WORKFLOW] Full", message: "complete workflow for electrical tenders" },
-    { label: "[STATUS] System", message: "show current status" },
-    { label: "[PRICE] Calc", message: "calculate pricing for selected RFP" },
+    { label: "🔍 Scan RFPs", message: "Scan for cable and wire RFPs" },
+    { label: "⚡ Full Workflow", message: "Complete workflow for electrical tenders" },
+    { label: "📊 Show Status", message: "Show me the current status" },
+    { label: "💰 Pricing", message: "Calculate pricing for selected RFP" },
   ];
 
   return (
     <div className={styles.chatInterface}>
       <header className={styles.chatHeader}>
-        <div className={styles.terminalHeader}>
-          <div className={styles.terminalTitle}>
-            <span className={styles.terminalGreen}>root@rfp-system:~$</span>
-            <span className={styles.terminalBlue}> ./rfp-assistant --mode=interactive</span>
-          </div>
-          <div className={styles.terminalStatus}>
-            <span className={styles.terminalGreen}>●</span>
-            <span>ONLINE</span>
-          </div>
+        <div>
+          <h1>💬 Chat Assistant</h1>
+          <p>AI-powered RFP automation conversation</p>
         </div>
         <div className={styles.sessionInfo}>
           {sessionId && (
-            <span className={styles.sessionBadge}>SESSION: {sessionId.slice(-8).toUpperCase()}</span>
+            <span className={styles.sessionBadge}>Session: {sessionId.slice(-8)}</span>
           )}
         </div>
       </header>
@@ -132,37 +115,39 @@ Ready for input >`,
       <div className={styles.chatMessages}>
         {messages.map((msg, idx) => (
           <div key={idx} className={`${styles.message} ${msg.role === "user" ? styles.user : styles.assistant}`}>
-            <div className={styles.terminalLine}>
+            <div className={styles.messageAvatar}>{msg.role === "user" ? "👤" : "🤖"}</div>
+            <div className={styles.messageContent}>
               {msg.role === "assistant" ? (
-                <div className={styles.terminalOutput}>
-                  <pre className={styles.terminalText}>
+                <div className={styles.messageText}>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
                     {msg.message || ""}
-                  </pre>
+                  </ReactMarkdown>
                 </div>
               ) : (
-                <div className={styles.terminalPrompt}>
-                  <span className={styles.terminalGreen}>user@rfp-system:~$</span>
-                  <span className={styles.terminalWhite}> {msg.message}</span>
+                <div className={styles.messageText}>
+                  {(msg.message || "").split("\n").map((line, i) => (
+                    <React.Fragment key={i}>
+                      {line}
+                      {i < (msg.message || "").split("\n").length - 1 && <br />}
+                    </React.Fragment>
+                  ))}
                 </div>
               )}
-            </div>
-            <div className={styles.messageTime}>
-              [{msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : ""}]
+              <div className={styles.messageTime}>
+                {msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : ""}
+              </div>
             </div>
           </div>
         ))}
 
         {loading && (
           <div className={`${styles.message} ${styles.assistant}`}>
-            <div className={styles.terminalOutput}>
-              <div className={styles.terminalTyping}>
-                <span className={styles.terminalGreen}>$</span>
-                <span className={styles.terminalCaret}>Processing</span>
-                <span className={styles.typingIndicator}>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </span>
+            <div className={styles.messageAvatar}>🤖</div>
+            <div className={styles.messageContent}>
+              <div className={styles.typingIndicator}>
+                <span></span>
+                <span></span>
+                <span></span>
               </div>
             </div>
           </div>
@@ -171,39 +156,33 @@ Ready for input >`,
       </div>
 
       <div className={styles.quickActionsBar}>
-        <div className={styles.terminalCommands}>
-          <span className={styles.terminalGray}># Quick Commands:</span>
-          {quickActions.map((action, idx) => (
-            <button
-              key={idx}
-              className={styles.terminalCommandBtn}
-              onClick={() => {
-                setInput(action.message);
-                setTimeout(() => sendMessage(), 100);
-              }}
-              type="button"
-            >
-              {action.label}
-            </button>
-          ))}
-        </div>
+        {quickActions.map((action, idx) => (
+          <button
+            key={idx}
+            className={styles.quickActionBtn}
+            onClick={() => {
+              setInput(action.message);
+              setTimeout(() => sendMessage(), 100);
+            }}
+            type="button"
+          >
+            {action.label}
+          </button>
+        ))}
       </div>
 
       <div className={styles.chatInputContainer}>
-        <div className={styles.terminalInputLine}>
-          <span className={styles.terminalPromptSymbol}>user@rfp-system:~$</span>
-          <textarea
-            className={styles.terminalInput}
-            placeholder="Enter command..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyPress}
-            rows={1}
-          />
-          <button className={styles.terminalSendBtn} onClick={sendMessage} disabled={loading || !input.trim()} type="button">
-            {loading ? "⏳" : "▶"}
-          </button>
-        </div>
+        <textarea
+          className={styles.chatInput}
+          placeholder="Type your message... (e.g., 'Scan for cable RFPs')"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyPress}
+          rows={2}
+        />
+        <button className={styles.sendBtn} onClick={sendMessage} disabled={loading || !input.trim()} type="button">
+          {loading ? "⏳" : "📤"}
+        </button>
       </div>
     </div>
   );
