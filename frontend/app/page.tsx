@@ -11,6 +11,7 @@ import AgentStatusCard from "@/components/dashboard/AgentStatusCard";
 import RFPTable from "@/components/dashboard/RFPTable";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Spinner, ButtonLoader } from "@/components/ui/spinner";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import {
@@ -134,18 +135,18 @@ export default function Dashboard() {
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                <Button
-                  variant="outline"
-                  size="sm"
+                <ButtonLoader 
+                  loading={loading}
                   onClick={refreshData}
-                  disabled={loading}
-                  className="bg-transparent"
+                  className="bg-transparent border-border hover:bg-secondary text-foreground"
                 >
-                  <RefreshCw
-                    className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
-                  />
-                  Refresh
-                </Button>
+                  {!loading && (
+                    <>
+                      <RefreshCw className="w-4 h-4 mr-2" />
+                      Refresh
+                    </>
+                  )}
+                </ButtonLoader>
                 {canCreate() && (
                   <Button size="sm" onClick={() => router.push("/rfps?new=1")}
                   >
@@ -246,6 +247,7 @@ export default function Dashboard() {
                 onView={handleViewRFP}
                 onProcess={handleProcessRFP}
                 onDownload={handleDownloadResponse}
+                loading={loading}
               />
             </div>
           </div>

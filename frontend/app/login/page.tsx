@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Spinner, ButtonLoader } from "@/components/ui/spinner";
 import { Loader2, Mail, Lock, AlertCircle, ArrowRight, Sparkles, Shield, Zap } from "lucide-react";
 
 export default function LoginPage() {
@@ -135,7 +136,7 @@ export default function LoginPage() {
           </div>
 
           {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} id="login-form" className="space-y-5">
             {error && (
               <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
                 <AlertCircle className="h-4 w-4" />
@@ -183,23 +184,18 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <Button 
-              type="submit" 
+            <ButtonLoader 
+              loading={loading}
+              type="submit"
               className="w-full h-11 font-medium"
-              disabled={loading}
             >
-              {loading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Signing in...
-                </>
-              ) : (
+              {!loading && (
                 <>
                   Sign In
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </>
               )}
-            </Button>
+            </ButtonLoader>
           </form>
 
           {/* Guest Access Option */}
